@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,7 +9,20 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('about');
   const [selectedWork, setSelectedWork] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const telegramUsername = 'DRAGOmik';
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisitedArtStudio');
+    if (!hasVisited) {
+      const timer = setTimeout(() => {
+        setShowWelcome(true);
+        setIsChatOpen(true);
+      }, 2000);
+      localStorage.setItem('hasVisitedArtStudio', 'true');
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const portfolioCategories = [
     {
@@ -292,7 +305,7 @@ const Index = () => {
       {/* Floating Telegram Chat Button */}
       <div className="fixed bottom-6 right-6 z-50">
         {isChatOpen && (
-          <Card className="mb-4 p-4 w-72 shadow-2xl animate-fade-in">
+          <Card className="mb-4 p-4 w-72 sm:w-80 shadow-2xl animate-fade-in">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
@@ -307,21 +320,56 @@ const Index = () => {
                 variant="ghost" 
                 size="icon" 
                 className="h-8 w-8"
-                onClick={() => setIsChatOpen(false)}
+                onClick={() => {
+                  setIsChatOpen(false);
+                  setShowWelcome(false);
+                }}
               >
                 <Icon name="X" size={16} />
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mb-3">
-              Привет! 👋 Напишите мне в Telegram, чтобы обсудить ваш проект
-            </p>
-            <Button 
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-              onClick={() => window.open(`https://t.me/${telegramUsername}`, '_blank')}
-            >
-              <Icon name="Send" size={16} className="mr-2" />
-              Открыть в Telegram
-            </Button>
+            
+            {showWelcome ? (
+              <div className="space-y-3">
+                <div className="bg-muted/50 rounded-lg p-3">
+                  <p className="text-sm mb-2">👋 <strong>Добро пожаловать!</strong></p>
+                  <p className="text-sm text-muted-foreground">
+                    Спасибо, что заглянули в мою арт-студию! Я создаю уникальные работы: от графики до росписи стен. 
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Есть вопросы? Пишите в Telegram — обсудим ваш проект! ✨
+                  </p>
+                </div>
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  onClick={() => window.open(`https://t.me/${telegramUsername}`, '_blank')}
+                >
+                  <Icon name="Send" size={16} className="mr-2" />
+                  Написать в Telegram
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full"
+                  onClick={() => setShowWelcome(false)}
+                >
+                  Спасибо, посмотрю сайт
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Привет! 👋 Напишите мне в Telegram, чтобы обсудить ваш проект
+                </p>
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  onClick={() => window.open(`https://t.me/${telegramUsername}`, '_blank')}
+                >
+                  <Icon name="Send" size={16} className="mr-2" />
+                  Открыть в Telegram
+                </Button>
+              </div>
+            )}
           </Card>
         )}
         
