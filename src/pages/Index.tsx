@@ -8,6 +8,8 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('about');
   const [selectedWork, setSelectedWork] = useState<number | null>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const telegramUsername = 'DRAGOmik';
 
   const portfolioCategories = [
     {
@@ -286,6 +288,55 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      {/* Floating Telegram Chat Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {isChatOpen && (
+          <Card className="mb-4 p-4 w-72 shadow-2xl animate-fade-in">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                  <Icon name="MessageCircle" size={20} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">@{telegramUsername}</h4>
+                  <p className="text-xs text-muted-foreground">Художница</p>
+                </div>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8"
+                onClick={() => setIsChatOpen(false)}
+              >
+                <Icon name="X" size={16} />
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              Привет! 👋 Напишите мне в Telegram, чтобы обсудить ваш проект
+            </p>
+            <Button 
+              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+              onClick={() => window.open(`https://t.me/${telegramUsername}`, '_blank')}
+            >
+              <Icon name="Send" size={16} className="mr-2" />
+              Открыть в Telegram
+            </Button>
+          </Card>
+        )}
+        
+        <Button
+          size="icon"
+          className="h-14 w-14 rounded-full shadow-2xl bg-gradient-to-br from-primary via-secondary to-accent hover:scale-110 transition-transform"
+          onClick={() => setIsChatOpen(!isChatOpen)}
+        >
+          {isChatOpen ? (
+            <Icon name="X" size={24} className="text-white" />
+          ) : (
+            <Icon name="MessageCircle" size={24} className="text-white" />
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
