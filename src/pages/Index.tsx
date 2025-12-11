@@ -10,6 +10,8 @@ const Index = () => {
   const [selectedWork, setSelectedWork] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [priceRange, setPriceRange] = useState<string>('all');
   const telegramUsername = 'DRAGOmik';
 
   useEffect(() => {
@@ -78,7 +80,8 @@ const Index = () => {
       description: 'Акрил на холсте, 60x80 см',
       price: 15000,
       image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=600',
-      available: true
+      available: true,
+      category: 'painting'
     },
     {
       id: 2,
@@ -86,7 +89,8 @@ const Index = () => {
       description: 'Масло на холсте, 50x70 см',
       price: 18000,
       image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600',
-      available: true
+      available: true,
+      category: 'graphics'
     },
     {
       id: 3,
@@ -94,7 +98,8 @@ const Index = () => {
       description: 'Смешанная техника, 40x60 см',
       price: 12000,
       image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600',
-      available: true
+      available: true,
+      category: 'interior'
     },
     {
       id: 4,
@@ -102,7 +107,8 @@ const Index = () => {
       description: 'Акрил на холсте, 70x100 см',
       price: 22000,
       image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600',
-      available: true
+      available: true,
+      category: 'graphics'
     },
     {
       id: 5,
@@ -110,7 +116,8 @@ const Index = () => {
       description: 'Масло на холсте, 50x50 см',
       price: 14000,
       image: 'https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=600',
-      available: false
+      available: false,
+      category: 'interior'
     },
     {
       id: 6,
@@ -118,9 +125,62 @@ const Index = () => {
       description: 'Акрил на холсте, 60x80 см',
       price: 20000,
       image: 'https://images.unsplash.com/photo-1578926078223-f11ce9c95a58?w=600',
-      available: true
+      available: true,
+      category: 'painting'
+    },
+    {
+      id: 7,
+      title: 'Геометрическая абстракция',
+      description: 'Акрил на холсте, 80x100 см',
+      price: 25000,
+      image: 'https://images.unsplash.com/photo-1551732998-9518b4c8d681?w=600',
+      available: true,
+      category: 'graphics'
+    },
+    {
+      id: 8,
+      title: 'Цветочная композиция',
+      description: 'Масло на холсте, 50x70 см',
+      price: 16000,
+      image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600',
+      available: true,
+      category: 'interior'
+    },
+    {
+      id: 9,
+      title: 'Морской закат',
+      description: 'Акрил на холсте, 70x90 см',
+      price: 19000,
+      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600',
+      available: true,
+      category: 'painting'
     }
   ];
+
+  const shopCategories = [
+    { id: 'all', title: 'Все картины', icon: 'Grid' },
+    { id: 'painting', title: 'Живопись', icon: 'Brush' },
+    { id: 'graphics', title: 'Графика', icon: 'Palette' },
+    { id: 'interior', title: 'Интерьерные', icon: 'Home' }
+  ];
+
+  const priceRanges = [
+    { id: 'all', title: 'Любая цена' },
+    { id: 'low', title: 'До 15 000 ₽' },
+    { id: 'medium', title: '15 000 - 20 000 ₽' },
+    { id: 'high', title: 'От 20 000 ₽' }
+  ];
+
+  const filteredShopItems = shopItems.filter(item => {
+    const categoryMatch = selectedCategory === 'all' || item.category === selectedCategory;
+    
+    let priceMatch = true;
+    if (priceRange === 'low') priceMatch = item.price < 15000;
+    if (priceRange === 'medium') priceMatch = item.price >= 15000 && item.price <= 20000;
+    if (priceRange === 'high') priceMatch = item.price > 20000;
+    
+    return categoryMatch && priceMatch;
+  });
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -290,8 +350,49 @@ const Index = () => {
             <p className="text-sm sm:text-base text-muted-foreground">Готовые работы доступны для покупки</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {shopItems.map((item, idx) => (
+          <div className="mb-8 space-y-6">
+            <div>
+              <h3 className="text-sm font-medium mb-3 text-muted-foreground">Категория</h3>
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                {shopCategories.map((cat) => (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className="justify-start"
+                  >
+                    <Icon name={cat.icon} size={18} className="mr-2" />
+                    {cat.title}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-3 text-muted-foreground">Цена</h3>
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                {priceRanges.map((range) => (
+                  <Button
+                    key={range.id}
+                    variant={priceRange === range.id ? 'default' : 'outline'}
+                    onClick={() => setPriceRange(range.id)}
+                  >
+                    {range.title}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {filteredShopItems.length === 0 ? (
+            <div className="text-center py-12">
+              <Icon name="SearchX" size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <p className="text-lg text-muted-foreground">Картины не найдены</p>
+              <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить фильтры</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {filteredShopItems.map((item, idx) => (
               <Card 
                 key={item.id}
                 className="overflow-hidden group hover:shadow-2xl transition-all animate-fade-in"
@@ -344,8 +445,9 @@ const Index = () => {
                   </Button>
                 </div>
               </Card>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
