@@ -12,6 +12,7 @@ const Index = () => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState<string>('none');
   const telegramUsername = 'DRAGOmik';
 
   useEffect(() => {
@@ -180,6 +181,10 @@ const Index = () => {
     if (priceRange === 'high') priceMatch = item.price > 20000;
     
     return categoryMatch && priceMatch;
+  }).sort((a, b) => {
+    if (sortOrder === 'asc') return a.price - b.price;
+    if (sortOrder === 'desc') return b.price - a.price;
+    return 0;
   });
 
   const scrollToSection = (sectionId: string) => {
@@ -380,6 +385,33 @@ const Index = () => {
                     {range.title}
                   </Button>
                 ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-3 text-muted-foreground">Сортировка</h3>
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                <Button
+                  variant={sortOrder === 'none' ? 'default' : 'outline'}
+                  onClick={() => setSortOrder('none')}
+                >
+                  <Icon name="List" size={18} className="mr-2" />
+                  По умолчанию
+                </Button>
+                <Button
+                  variant={sortOrder === 'asc' ? 'default' : 'outline'}
+                  onClick={() => setSortOrder('asc')}
+                >
+                  <Icon name="ArrowUp" size={18} className="mr-2" />
+                  Сначала дешёвые
+                </Button>
+                <Button
+                  variant={sortOrder === 'desc' ? 'default' : 'outline'}
+                  onClick={() => setSortOrder('desc')}
+                >
+                  <Icon name="ArrowDown" size={18} className="mr-2" />
+                  Сначала дорогие
+                </Button>
               </div>
             </div>
           </div>
