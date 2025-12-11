@@ -71,6 +71,57 @@ const Index = () => {
     }
   ];
 
+  const shopItems = [
+    {
+      id: 1,
+      title: 'Абстрактный пейзаж',
+      description: 'Акрил на холсте, 60x80 см',
+      price: 15000,
+      image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=600',
+      available: true
+    },
+    {
+      id: 2,
+      title: 'Городская геометрия',
+      description: 'Масло на холсте, 50x70 см',
+      price: 18000,
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600',
+      available: true
+    },
+    {
+      id: 3,
+      title: 'Флора',
+      description: 'Смешанная техника, 40x60 см',
+      price: 12000,
+      image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600',
+      available: true
+    },
+    {
+      id: 4,
+      title: 'Ночной город',
+      description: 'Акрил на холсте, 70x100 см',
+      price: 22000,
+      image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600',
+      available: true
+    },
+    {
+      id: 5,
+      title: 'Минимализм',
+      description: 'Масло на холсте, 50x50 см',
+      price: 14000,
+      image: 'https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=600',
+      available: false
+    },
+    {
+      id: 6,
+      title: 'Портрет в цвете',
+      description: 'Акрил на холсте, 60x80 см',
+      price: 20000,
+      image: 'https://images.unsplash.com/photo-1578926078223-f11ce9c95a58?w=600',
+      available: true
+    }
+  ];
+
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
@@ -88,7 +139,7 @@ const Index = () => {
               Арт-студия
             </h1>
             <div className="hidden md:flex gap-6">
-              {['about', 'portfolio', 'order'].map((section) => (
+              {['about', 'portfolio', 'shop', 'order'].map((section) => (
                 <button
                   key={section}
                   onClick={() => scrollToSection(section)}
@@ -96,7 +147,7 @@ const Index = () => {
                     activeSection === section ? 'text-primary' : 'text-muted-foreground'
                   }`}
                 >
-                  {section === 'about' ? 'Обо мне' : section === 'portfolio' ? 'Портфолио' : 'Заказать'}
+                  {section === 'about' ? 'Обо мне' : section === 'portfolio' ? 'Портфолио' : section === 'shop' ? 'Магазин' : 'Заказать'}
                 </button>
               ))}
             </div>
@@ -116,6 +167,14 @@ const Index = () => {
                 className="h-9 px-3"
               >
                 <Icon name="Palette" size={18} />
+              </Button>
+              <Button 
+                variant={activeSection === 'shop' ? 'default' : 'ghost'} 
+                size="sm" 
+                onClick={() => scrollToSection('shop')}
+                className="h-9 px-3"
+              >
+                <Icon name="ShoppingBag" size={18} />
               </Button>
               <Button 
                 variant={activeSection === 'order' ? 'default' : 'ghost'} 
@@ -221,6 +280,72 @@ const Index = () => {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section id="shop" className="py-12 sm:py-20 px-3 sm:px-4 bg-muted/30">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">Магазин картин</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Готовые работы доступны для покупки</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {shopItems.map((item, idx) => (
+              <Card 
+                key={item.id}
+                className="overflow-hidden group hover:shadow-2xl transition-all animate-fade-in"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <div className="relative overflow-hidden h-56 sm:h-64 md:h-72">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  {!item.available && (
+                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                      Продано
+                    </div>
+                  )}
+                  {item.available && (
+                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                      В наличии
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                      {item.price.toLocaleString('ru-RU')} ₽
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                    disabled={!item.available}
+                    onClick={() => window.open(`https://t.me/${telegramUsername}?text=${encodeURIComponent(`Здравствуйте! Хочу купить картину "${item.title}" за ${item.price.toLocaleString('ru-RU')} ₽`)}`, '_blank')}
+                  >
+                    {item.available ? (
+                      <>
+                        <Icon name="ShoppingCart" size={18} className="mr-2" />
+                        Купить в Telegram
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="X" size={18} className="mr-2" />
+                        Недоступно
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
